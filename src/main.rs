@@ -8,6 +8,12 @@ use rustc_serialize::hex::ToHex;
 fn load_strings(file: &str) -> Vec<Vec<u8>> {
 	let mut result = Vec::new();
 
+	let mut infile = BufReader::new(try!(File::open(file)));
+
+	for line in infile.lines() {
+		println!("Reading line {}", line);
+	}
+
 	result
 }
 
