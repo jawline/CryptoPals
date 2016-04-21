@@ -33,3 +33,7 @@ pub fn one_byte_xor(origin: Vec<u8>) -> Result<String, String> {
 		Err("Could not find any valid strings".to_string())
 	}
 }
+
+pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String> {
+	Err("Could not find any valid strings".to_string())
+}

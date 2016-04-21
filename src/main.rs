@@ -5,6 +5,12 @@ mod string_score;
 use rustc_serialize::hex::FromHex;
 use rustc_serialize::hex::ToHex;
 
+fn load_strings(file: &str) -> Vec<Vec<u8>> {
+	let mut result = Vec::new();
+
+	result
+}
+
 fn main() {
 	match std::env::args().nth(1) {
     	Some(ref x) if x == "xor" => {
@@ -18,6 +24,17 @@ fn main() {
     		match xor::one_byte_xor(arg_one) {
     			Ok(x) => {
     				println!("Likely string {}", x);
+    			},
+    			Err(x) => {
+    				println!("Error {}", x);
+    			}
+    		}
+    	},
+    	Some(ref x) if x == "find_sbxor" => {
+    		let arg_one = std::env::args().nth(2).unwrap();
+    		println!("Loading potential SBXOR's from file {}", arg_one);
+    		match xor::find_sbxor(load_strings(&arg_one)) {
+    			Ok(x) => {
     			},
     			Err(x) => {
     				println!("Error {}", x);
