@@ -4,7 +4,7 @@ fn byte_distance(first: u8, second: u8) -> usize {
 
 	while val != 0 {
 		dist += 1;
-		val &= val - 1;
+		val = val & (val - 1);
 	}
 
 	dist
