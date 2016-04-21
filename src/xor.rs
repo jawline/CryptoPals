@@ -113,11 +113,8 @@ pub fn break_repeating_key(cipher: Vec<u8>) -> String {
 		valid_strings.push(String::from_utf8(repeating_key_xor(&cipher, &key)).unwrap());
 	}
 
-	for item in valid_strings {
-		println!("String {}", item);
-	}
-
-	"Aaaah".to_string()
+	valid_strings.sort_by(|x, y| score_string(x).cmp(&score_string(x)));
+	valid_strings[0].to_string()
 }
 
 

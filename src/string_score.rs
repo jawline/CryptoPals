@@ -30,7 +30,7 @@ pub fn score_string(target: &str) -> i64 {
 	
 	let mut score: i64 = 100000;
 
-	score -= distance('e', 0, &as_vec) as i64;
+	score -= 10 * distance('e', 0, &as_vec) as i64;
 	score -= distance('t', 1, &as_vec) as i64;
 	score -= distance('a', 2, &as_vec) as i64;
 	score -= distance('o', 3, &as_vec) as i64;
@@ -59,7 +59,10 @@ pub fn score_string(target: &str) -> i64 {
 
 	for (c, _) in as_vec {
 		if c != ' ' && !c.is_alphabetic() {
-			score -= 50;
+			score -= 500;
+		}
+		if c.is_uppercase() {
+			score -= 100;
 		}
 	}
 
