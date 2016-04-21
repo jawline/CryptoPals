@@ -62,7 +62,7 @@ fn main() {
     		let s1 = std::env::args().nth(2).unwrap();
     		let s2 = std::env::args().nth(3).unwrap();
     		println!("Hamming {} and {}", s1, s2);
-    		println!("{}", hamming::distance(&s1, &s2).unwrap());
+    		println!("{}", hamming::distance(&s1.into_bytes(), &s2.into_bytes()).unwrap());
     	},
 		Some(ref x) => {
 			println!("No selection {}", x);
