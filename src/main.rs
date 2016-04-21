@@ -4,14 +4,18 @@ mod string_score;
 
 use rustc_serialize::hex::FromHex;
 use rustc_serialize::hex::ToHex;
+use std::io::{self, BufReader};
+use std::io::prelude::*;
+use std::fs::File;
 
 fn load_strings(file: &str) -> Vec<Vec<u8>> {
 	let mut result = Vec::new();
 
-	let mut infile = BufReader::new(try!(File::open(file)));
+	let f = File::open(file).unwrap();
+	let f = BufReader::new(f);
 
-	for line in infile.lines() {
-		println!("Reading line {}", line);
+	for line in f.lines() {
+		result.push(line.unwrap().from_hex().unwrap());
 	}
 
 	result
