@@ -1,5 +1,6 @@
 extern crate rustc_serialize;
 mod xor;
+mod hamming;
 mod string_score;
 
 use rustc_serialize::hex::FromHex;
@@ -56,6 +57,12 @@ fn main() {
     		let text = std::env::args().nth(2).unwrap();
     		let key = std::env::args().nth(3).unwrap();
     		println!("{}", xor::repeating_key_xor(&text, &key).to_hex());
+    	},
+    	Some(ref x) if x == "hamming" => {
+    		let s1 = std::env::args().nth(2).unwrap();
+    		let s2 = std::env::args().nth(3).unwrap();
+    		println!("Hamming {} and {}", s1, s2);
+    		println!("{}", hamming::distance(&s1, &s2).unwrap());
     	},
 		Some(ref x) => {
 			println!("No selection {}", x);
