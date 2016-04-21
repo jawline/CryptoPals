@@ -67,7 +67,7 @@ fn main() {
     	Some(ref x) if x == "repeating_key_xor" => {
     		let text = std::env::args().nth(2).unwrap();
     		let key = std::env::args().nth(3).unwrap();
-    		println!("{}", xor::repeating_key_xor(&text, &key).to_hex());
+    		println!("{}", xor::repeating_key_xor(&text.into_bytes(), &key.into_bytes()).to_hex());
     	},
     	Some(ref x) if x == "hamming" => {
     		let s1 = std::env::args().nth(2).unwrap();

@@ -14,7 +14,7 @@ pub fn one_byte_xor(origin: &Vec<u8>) -> Result<(String, u8), String> {
 
 	let mut highest = None;
 	let mut highest_key = 0;
-	let mut highest_score = 0;
+	let mut highest_score = -99999999;
 
 	for xor_v in 0..255 {
 		let xored = xor_all(&origin, xor_v);
@@ -62,7 +62,7 @@ pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String>
 	}
 }
 
-fn handle_key_size(cipher: &Vec<u8>, key_size: usize) {
+fn handle_key_size(cipher: &Vec<u8>, key_size: usize) -> Vec<u8> {
 	println!("Handling key {}", key_size);
 
 	let mut blocks = Vec::new();
@@ -83,6 +83,15 @@ fn handle_key_size(cipher: &Vec<u8>, key_size: usize) {
 	}
 
 	println!("Transposed the bytes");
+
+	let mut final_key = Vec::new();
+
+	for i in 0..key_size {
+		let (_, key) = one_byte_xor(&transposed[i]).unwrap();
+		final_key.push(key);
+	}
+
+	final_key
 }
 
 pub fn break_repeating_key(cipher: Vec<u8>) -> String {
@@ -97,21 +106,26 @@ pub fn break_repeating_key(cipher: Vec<u8>) -> String {
 
 	key_scores.sort_by(|&(idx, val), &(idx2, val2)| val.partial_cmp(&val2).unwrap_or(Ordering::Equal));
 
+	let mut valid_strings = Vec::new();
+
 	for &(idx, val) in key_scores.iter().take(4) {
-		handle_key_size(&cipher, idx);
+		let key = handle_key_size(&cipher, idx);
+		valid_strings.push(String::from_utf8(repeating_key_xor(&cipher, &key)).unwrap());
+	}
+
+	for item in valid_strings {
+		println!("String {}", item);
 	}
 
 	"Aaaah".to_string()
 }
 
 
-pub fn repeating_key_xor(text: &str, key: &str) -> Vec<u8> {
-	let text_bytes = text.to_string().into_bytes();
-	let key = key.to_string().into_bytes();
+pub fn repeating_key_xor(text: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
 	let mut result = Vec::new();
 
-	for i in 0..text_bytes.len() {
-		result.push(text_bytes[i] ^ key[i % key.len()]);
+	for i in 0..text.len() {
+		result.push(text[i] ^ key[i % key.len()]);
 	}
 
 	result
