@@ -1,5 +1,6 @@
 use string_score::*;
 use hamming;
+use std::cmp::Ordering;
 
 pub fn xor(origin: Vec<u8>, other: Vec<u8>) -> Vec<u8> {
 	origin.iter().zip(other.iter()).map(|(x,y)| x ^ y).collect()
@@ -66,10 +67,10 @@ pub fn break_repeating_key(cipher: Vec<u8>) -> String {
 	for key_size in 2..40 {
 		let block_one: Vec<u8> = cipher.iter().cloned().take(key_size).collect();
 		let block_two: Vec<u8> = cipher.iter().cloned().skip(key_size).take(key_size).collect();
-		key_scores.push((key_size, hamming::distance(&block_one, &block_two).unwrap() / key_size));
+		key_scores.push((key_size, hamming::distance(&block_one, &block_two).unwrap() as f32 / key_size as f32));
 	}
 
-	key_scores.sort_by(|&(idx, val), &(idx2, val2)| val.cmp(&val2));
+	key_scores.sort_by(|&(idx, val), &(idx2, val2)| val.partial_cmp(&val2).unwrap_or(Ordering::Equal));
 
 	for (idx, val) in key_scores {
 		println!("{}: {}", idx, val);
