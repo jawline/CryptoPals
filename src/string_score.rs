@@ -47,6 +47,15 @@ pub fn score_string(target: &str) -> i64 {
 	score -= distance('f', 14, &as_vec) as i64;
 	score -= distance('y', 15, &as_vec) as i64;
 	score -= distance('w', 16, &as_vec) as i64;
+	score -= distance('g', 17, &as_vec) as i64;
+	score -= distance('p', 18, &as_vec) as i64;
+	score -= distance('b', 19, &as_vec) as i64;
+	score -= distance('v', 20, &as_vec) as i64;
+	score -= distance('k', 21, &as_vec) as i64;
+	score -= distance('x', 22, &as_vec) as i64;
+	score -= distance('q', 23, &as_vec) as i64;
+	score -= distance('j', 24, &as_vec) as i64;
+	score -= distance('z', 25, &as_vec) as i64;
 
 	for (c, _) in as_vec {
 		if c != ' ' && !c.is_alphabetic() {
