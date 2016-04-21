@@ -44,7 +44,7 @@ fn main() {
     		let arg_one = std::env::args().nth(2).unwrap().from_hex().unwrap();
     		println!("Attempting to decrypt hex encoded argument {}", std::env::args().nth(2).unwrap());
     		match xor::one_byte_xor(&arg_one) {
-    			Ok(x) => {
+    			Ok((x, _)) => {
     				println!("Likely string {}", x.trim());
     			},
     			Err(x) => {

@@ -10,9 +10,10 @@ pub fn xor_all(origin: &Vec<u8>, v: u8) -> Vec<u8> {
 	origin.iter().map(|x| x ^ v).collect()
 }
 
-pub fn one_byte_xor(origin: &Vec<u8>) -> Result<String, String> {
+pub fn one_byte_xor(origin: &Vec<u8>) -> Result<(String, u8), String> {
 
 	let mut highest = None;
+	let mut highest_key = 0;
 	let mut highest_score = 0;
 
 	for xor_v in 0..255 {
@@ -24,13 +25,14 @@ pub fn one_byte_xor(origin: &Vec<u8>) -> Result<String, String> {
 			let local_score = score_string(&unwrapped);
 			if local_score > highest_score {
 				highest = Some(unwrapped);
+				highest_key = xor_v;
 				highest_score = local_score;
 			}
 		}
 	}
 
 	if highest.is_some() {
-		Ok(highest.unwrap())
+		Ok((highest.unwrap(), highest_key))
 	} else {
 		Err("Could not find any valid strings".to_string())
 	}
@@ -44,7 +46,7 @@ pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String>
 		let xor_res = one_byte_xor(&potential);
 		let is_ok = xor_res.is_ok();
 		if is_ok {
-			let unwrapped = xor_res.unwrap();
+			let (unwrapped, _) = xor_res.unwrap();
 			let score = score_string(&unwrapped);
 			if score > highest_score {
 				highest = Some((unwrapped, potential.clone()));
@@ -60,6 +62,29 @@ pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String>
 	}
 }
 
+fn handle_key_size(cipher: &Vec<u8>, key_size: usize) {
+	println!("Handling key {}", key_size);
+
+	let mut blocks = Vec::new();
+	let mut current = cipher.iter();
+
+	for i in 0..cipher.len() / key_size {
+		let block: Vec<u8> = cipher.iter().skip(i * key_size).take(key_size).map(|&x| x).collect();
+		blocks.push(block);
+	}
+
+	println!("Constructed {} blocks", blocks.len());
+
+	let mut transposed = Vec::new();
+
+	for i in 0..key_size {
+		let transposed_byte: Vec<u8> = blocks.iter().map(|x| x[i]).collect();
+		transposed.push(transposed_byte);
+	}
+
+	println!("Transposed the bytes");
+}
+
 pub fn break_repeating_key(cipher: Vec<u8>) -> String {
 
 	let mut key_scores = Vec::new();
@@ -72,8 +97,8 @@ pub fn break_repeating_key(cipher: Vec<u8>) -> String {
 
 	key_scores.sort_by(|&(idx, val), &(idx2, val2)| val.partial_cmp(&val2).unwrap_or(Ordering::Equal));
 
-	for (idx, val) in key_scores {
-		println!("{}: {}", idx, val);
+	for &(idx, val) in key_scores.iter().take(4) {
+		handle_key_size(&cipher, idx);
 	}
 
 	"Aaaah".to_string()
