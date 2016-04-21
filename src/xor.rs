@@ -43,10 +43,7 @@ pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String>
 		let is_ok = xor_res.is_ok();
 		if is_ok {
 			let unwrapped = xor_res.unwrap();
-			println!("Potential {}", unwrapped);
-
 			let score = score_string(&unwrapped);
-
 			if score > highest_score {
 				highest = Some((unwrapped, potential.clone()));
 				highest_score = score;

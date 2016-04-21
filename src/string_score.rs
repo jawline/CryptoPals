@@ -13,18 +13,22 @@ pub fn score_char(tc: char) -> i32 {
 	let mut score = 0;
 
 	if tc.is_digit(10) {
-		score = 10;
+		score = -5;
 	}
 
 	if tc.is_alphabetic() {
-		score = 25;
+		if tc.is_lowercase() {
+			score = 50;
+			if is_vowel(tc) {
+				score = 100;
+			}
+		} else {
+			score = 10;
+		}
 	}
 
-	if is_vowel(tc) {
-		score = 50;
-	}
 
-	if !tc.is_alphanumeric() {
+	if tc != ' ' && !tc.is_alphanumeric() {
 		score = -50;
 	}
 
