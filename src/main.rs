@@ -14,7 +14,15 @@ fn main() {
     	},
     	Some(ref x) if x == "sbxor" => {
     		let arg_one = std::env::args().nth(2).unwrap().from_hex().unwrap();
-    		println!("Attempting to decrypt hex encoded argument");
+    		println!("Attempting to decrypt hex encoded argument {}", std::env::args().nth(2).unwrap());
+    		match xor::one_byte_xor(arg_one) {
+    			Ok(x) => {
+    				println!("Likely string {}", x);
+    			},
+    			Err(x) => {
+    				println!("Error {}", x);
+    			}
+    		}
     	},
 		Some(ref x) => {
 			println!("No selection {}", x);
