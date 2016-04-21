@@ -14,7 +14,7 @@ pub fn one_byte_xor(origin: &Vec<u8>) -> Result<(String, u8), String> {
 
 	let mut highest = None;
 	let mut highest_key = 0;
-	let mut highest_score = -99999999;
+	let mut highest_score = -9999999;
 
 	for xor_v in 0..255 {
 		let xored = xor_all(&origin, xor_v);
