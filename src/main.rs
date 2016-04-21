@@ -33,7 +33,7 @@ fn main() {
     		println!("Attempting to decrypt hex encoded argument {}", std::env::args().nth(2).unwrap());
     		match xor::one_byte_xor(&arg_one) {
     			Ok(x) => {
-    				println!("Likely string {}", x);
+    				println!("Likely string {}", x.trim());
     			},
     			Err(x) => {
     				println!("Error {}", x);
@@ -45,12 +45,17 @@ fn main() {
     		println!("Loading potential SBXOR's from file {}", arg_one);
     		match xor::find_sbxor(load_strings(&arg_one)) {
     			Ok((likely, bytes)) => {
-    				println!("Likely {}", likely);
+    				println!("Likely: {}", likely.trim());
     			},
     			Err(x) => {
-    				println!("Error {}", x);
+    				println!("Error: {}", x);
     			}
     		}
+    	},
+    	Some(ref x) if x == "repeating_key_xor" => {
+    		let text = std::env::args().nth(2).unwrap();
+    		let key = std::env::args().nth(3).unwrap();
+    		println!("{}", xor::repeating_key_xor(&text, &key).to_hex());
     	},
 		Some(ref x) => {
 			println!("No selection {}", x);

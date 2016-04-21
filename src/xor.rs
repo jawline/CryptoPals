@@ -57,3 +57,15 @@ pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String>
 		Err("Could not find any valid strings".to_string())
 	}
 }
+
+pub fn repeating_key_xor(text: &str, key: &str) -> Vec<u8> {
+	let text_bytes = text.to_string().into_bytes();
+	let key = key.to_string().into_bytes();
+	let mut result = Vec::new();
+
+	for i in 0..text_bytes.len() {
+		result.push(text_bytes[i] ^ key[i % key.len()]);
+	}
+
+	result
+}
