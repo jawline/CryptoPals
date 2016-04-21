@@ -5,6 +5,10 @@ mod string_score;
 
 use rustc_serialize::hex::FromHex;
 use rustc_serialize::hex::ToHex;
+
+
+use rustc_serialize::base64::FromBase64;
+use rustc_serialize::base64::ToBase64;
 use std::io::{self, BufReader};
 use std::io::prelude::*;
 use std::fs::File;
@@ -20,6 +24,13 @@ fn load_strings(file: &str) -> Vec<Vec<u8>> {
 	}
 
 	result
+}
+
+fn buffer_file(file: &str) -> String {
+	let mut f = File::open(file).unwrap();
+	let mut buffer = String::new();
+	f.read_to_string(&mut buffer);
+	buffer
 }
 
 fn main() {
@@ -63,6 +74,10 @@ fn main() {
     		let s2 = std::env::args().nth(3).unwrap();
     		println!("Hamming {} and {}", s1, s2);
     		println!("{}", hamming::distance(&s1.into_bytes(), &s2.into_bytes()).unwrap());
+    	},
+    	Some(ref x) if x == "break_repeating_key" => {
+    		let in_file = std::env::args().nth(2).unwrap();
+    		println!("{}", xor::break_repeating_key(buffer_file(&in_file).from_base64().unwrap()));
     	},
 		Some(ref x) => {
 			println!("No selection {}", x);
