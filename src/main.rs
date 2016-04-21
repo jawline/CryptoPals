@@ -31,7 +31,7 @@ fn main() {
     	Some(ref x) if x == "sbxor" => {
     		let arg_one = std::env::args().nth(2).unwrap().from_hex().unwrap();
     		println!("Attempting to decrypt hex encoded argument {}", std::env::args().nth(2).unwrap());
-    		match xor::one_byte_xor(arg_one) {
+    		match xor::one_byte_xor(&arg_one) {
     			Ok(x) => {
     				println!("Likely string {}", x);
     			},
@@ -44,7 +44,8 @@ fn main() {
     		let arg_one = std::env::args().nth(2).unwrap();
     		println!("Loading potential SBXOR's from file {}", arg_one);
     		match xor::find_sbxor(load_strings(&arg_one)) {
-    			Ok(x) => {
+    			Ok((likely, bytes)) => {
+    				println!("Likely {}", likely);
     			},
     			Err(x) => {
     				println!("Error {}", x);

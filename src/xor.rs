@@ -8,7 +8,7 @@ pub fn xor_all(origin: &Vec<u8>, v: u8) -> Vec<u8> {
 	origin.iter().map(|x| x ^ v).collect()
 }
 
-pub fn one_byte_xor(origin: Vec<u8>) -> Result<String, String> {
+pub fn one_byte_xor(origin: &Vec<u8>) -> Result<String, String> {
 
 	let mut highest = None;
 	let mut highest_score = 0;
@@ -35,5 +35,28 @@ pub fn one_byte_xor(origin: Vec<u8>) -> Result<String, String> {
 }
 
 pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String> {
-	Err("Could not find any valid strings".to_string())
+	let mut highest = None;
+	let mut highest_score = 0;
+
+	for potential in potentials {
+		let xor_res = one_byte_xor(&potential);
+		let is_ok = xor_res.is_ok();
+		if is_ok {
+			let unwrapped = xor_res.unwrap();
+			println!("Potential {}", unwrapped);
+
+			let score = score_string(&unwrapped);
+
+			if score > highest_score {
+				highest = Some((unwrapped, potential.clone()));
+				highest_score = score;
+			}
+		}
+	}
+	
+	if highest.is_some() {
+		Ok(highest.unwrap())
+	} else {
+		Err("Could not find any valid strings".to_string())
+	}
 }
