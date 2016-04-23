@@ -87,7 +87,8 @@ fn handle_key_size(cipher: &Vec<u8>, key_size: usize) -> Vec<u8> {
 	let mut final_key = Vec::new();
 
 	for i in 0..key_size {
-		let (_, key) = one_byte_xor(&transposed[i]).unwrap();
+		let (data, key) = one_byte_xor(&transposed[i]).unwrap();
+		//println!("DATA: {}\n\n", data);
 		final_key.push(key);
 	}
 
@@ -108,9 +109,11 @@ pub fn break_repeating_key(cipher: Vec<u8>) -> String {
 
 	let mut valid_strings = Vec::new();
 
-	for &(idx, val) in key_scores.iter().take(4) {
+	for &(idx, val) in key_scores.iter() {
 		let key = handle_key_size(&cipher, idx);
-		valid_strings.push(String::from_utf8(repeating_key_xor(&cipher, &key)).unwrap());
+		let next = String::from_utf8(repeating_key_xor(&cipher, &key)).unwrap();
+		//println!("Valid: {}\n\n", next);
+		valid_strings.push(next);
 	}
 
 	valid_strings.sort_by(|x, y| score_string(x).partial_cmp(&score_string(x)).unwrap_or(Ordering::Equal));

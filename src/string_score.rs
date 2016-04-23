@@ -16,19 +16,25 @@ fn distance(c: char, i: usize, score: &Vec<(char, usize)>) -> usize {
 	score.len()
 }
 
-fn score_distance(c: char, freq: f64, expected: f64) {
-
+fn score_distance(c: char, freq: f64, expected: f64) -> f64 {
+	let res = (freq - expected) * 1000.0;
+	-(res).abs()
 }
 
-pub fn generate_frequency_map(target: &str) -> HashMap<char, usize> {
+pub fn generate_frequency_map(target: &str) -> (HashMap<char, usize>, usize) {
 	let mut omap = HashMap::<char, usize>::new();
+	let mut num_chars = 0;
 
 	for c in target.chars() {
 		let new = omap.get(&c).unwrap_or(&0) + 1;
 		omap.insert(c, new);
+
+		if c.is_alphabetic() {
+			num_chars += 1;
+		}
 	}
 
-	omap
+	(omap, num_chars)
 }
 
 fn sort_frequencies(map: &HashMap<char, usize>) -> Vec<(char, usize)> {
@@ -39,52 +45,51 @@ fn sort_frequencies(map: &HashMap<char, usize>) -> Vec<(char, usize)> {
 
 pub fn score_string(target: &str) -> f64 {
 
-	let mut omap = generate_frequency_map(target);
+	let (mut omap, ccount) = generate_frequency_map(target);
 	let as_vec = sort_frequencies(&omap);
 	
-	let mut score: f64 = 100000.0;
+	let mut score: f64 = 0.0;
 
-	score -= 10.0 * distance('e', 0, &as_vec) as f64;
-	score -= distance('t', 1, &as_vec) as f64;
-	score -= distance('a', 2, &as_vec) as f64;
-	score -= distance('o', 3, &as_vec) as f64;
-	score -= distance('i', 4, &as_vec) as f64;
-	score -= distance('n', 5, &as_vec) as f64;
-	score -= distance('s', 6, &as_vec) as f64;
-	score -= distance('r', 7, &as_vec) as f64;
-	score -= distance('h', 8, &as_vec) as f64;
-	score -= distance('d', 9, &as_vec) as f64;
-	score -= distance('l', 10, &as_vec) as f64;
-	score -= distance('u', 11, &as_vec) as f64;
-	score -= distance('c', 12, &as_vec) as f64;
-	score -= distance('m', 13, &as_vec) as f64;
-	score -= distance('f', 14, &as_vec) as f64;
-	score -= distance('y', 15, &as_vec) as f64;
-	score -= distance('w', 16, &as_vec) as f64;
-	score -= distance('g', 17, &as_vec) as f64;
-	score -= distance('p', 18, &as_vec) as f64;
-	score -= distance('b', 19, &as_vec) as f64;
-	score -= distance('v', 20, &as_vec) as f64;
-	score -= distance('k', 21, &as_vec) as f64;
-	score -= distance('x', 22, &as_vec) as f64;
-	score -= distance('q', 23, &as_vec) as f64;
-	score -= distance('j', 24, &as_vec) as f64;
-	score -= distance('z', 25, &as_vec) as f64;
+	score += score_distance('a', *omap.get(&'a').unwrap_or(&0) as f64 / ccount as f64, 0.08);
+	score += score_distance('b', *omap.get(&'b').unwrap_or(&0) as f64 / ccount as f64, 0.01);
+	score += score_distance('c', *omap.get(&'c').unwrap_or(&0) as f64 / ccount as f64, 0.03);
+	score += score_distance('d', *omap.get(&'d').unwrap_or(&0) as f64 / ccount as f64, 0.04);
+	score += score_distance('e', *omap.get(&'e').unwrap_or(&0) as f64 / ccount as f64, 0.14);
+	score += score_distance('f', *omap.get(&'f').unwrap_or(&0) as f64 / ccount as f64, 0.01);
+	score += score_distance('g', *omap.get(&'g').unwrap_or(&0) as f64 / ccount as f64, 0.01);
+	score += score_distance('h', *omap.get(&'h').unwrap_or(&0) as f64 / ccount as f64, 0.06);
+	score += score_distance('i', *omap.get(&'i').unwrap_or(&0) as f64 / ccount as f64, 0.06);
+	score += score_distance('j', *omap.get(&'j').unwrap_or(&0) as f64 / ccount as f64, 0.005);
+	score += score_distance('k', *omap.get(&'k').unwrap_or(&0) as f64 / ccount as f64, 0.01);
+	score += score_distance('l', *omap.get(&'l').unwrap_or(&0) as f64 / ccount as f64, 0.04);
+	score += score_distance('m', *omap.get(&'m').unwrap_or(&0) as f64 / ccount as f64, 0.02);
+	score += score_distance('n', *omap.get(&'n').unwrap_or(&0) as f64 / ccount as f64, 0.07);
+	score += score_distance('o', *omap.get(&'o').unwrap_or(&0) as f64 / ccount as f64, 0.07);
+	score += score_distance('p', *omap.get(&'p').unwrap_or(&0) as f64 / ccount as f64, 0.02);
+	score += score_distance('q', *omap.get(&'q').unwrap_or(&0) as f64 / ccount as f64, 0.005);
+	score += score_distance('r', *omap.get(&'r').unwrap_or(&0) as f64 / ccount as f64, 0.06);
+	score += score_distance('s', *omap.get(&'s').unwrap_or(&0) as f64 / ccount as f64, 0.06);
+	score += score_distance('t', *omap.get(&'t').unwrap_or(&0) as f64 / ccount as f64, 0.09);
+	score += score_distance('u', *omap.get(&'u').unwrap_or(&0) as f64 / ccount as f64, 0.03);
+	score += score_distance('v', *omap.get(&'v').unwrap_or(&0) as f64 / ccount as f64, 0.01);
+	score += score_distance('w', *omap.get(&'w').unwrap_or(&0) as f64 / ccount as f64, 0.02);
+	score += score_distance('x', *omap.get(&'x').unwrap_or(&0) as f64 / ccount as f64, 0.005);
+	score += score_distance('y', *omap.get(&'y').unwrap_or(&0) as f64 / ccount as f64, 0.02);
+	score += score_distance('z', *omap.get(&'z').unwrap_or(&0) as f64 / ccount as f64, 0.0);
 
-	for (c, _) in as_vec {
-
-		if c.is_lowercase() {
-			score += 100.0;
-		}
-
-		if !c.is_alphabetic() {
-			score -= 500.0;
-		}
-
-		if c.is_uppercase() {
-			score -= 100.0;
+	/*for c in target.chars() {
+		if c == ':' || c == '#' || c == '{' || c == '}' {
+			return -10000.0
 		}
 	}
+
+	let search: Vec<&str> = target.split("ss").collect();
+
+	score += search.len() as f64 * 100.0;
+
+	let search: Vec<&str> = target.split("the").collect();
+
+	score += search.len() as f64 * 1000.0;*/
 
 	score as f64
 }
