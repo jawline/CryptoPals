@@ -16,8 +16,7 @@ fn distance(c: char, i: usize, score: &Vec<(char, usize)>) -> usize {
 	score.len()
 }
 
-pub fn score_string(target: &str) -> i64 {
-
+pub fn generate_frequency_map(target: &str) -> HashMap<char, usize> {
 	let mut omap = HashMap::<char, usize>::new();
 
 	for c in target.chars() {
@@ -25,8 +24,19 @@ pub fn score_string(target: &str) -> i64 {
 		omap.insert(c, new);
 	}
 
-	let mut as_vec: Vec<(char, usize)> = omap.iter().map(|(&x, &y)| (x, y)).collect();
+	omap
+}
+
+fn sort_frequencies(map: &HashMap<char, usize>) -> Vec<(char, usize)> {
+	let mut as_vec: Vec<(char, usize)> = map.iter().map(|(&x, &y)| (x, y)).collect();
 	as_vec.sort_by(|&(idx, val), &(idx2, val2)| val.cmp(&val2));
+	as_vec
+}
+
+pub fn score_string(target: &str) -> i64 {
+
+	let mut omap = generate_frequency_map(target);
+	let as_vec = sort_frequencies(&omap);
 	
 	let mut score: i64 = 100000;
 
@@ -58,7 +68,12 @@ pub fn score_string(target: &str) -> i64 {
 	score -= distance('z', 25, &as_vec) as i64;
 
 	for (c, _) in as_vec {
-		if c != ' ' && !c.is_alphabetic() {
+
+		if c.is_lowercase() {
+			score += 100;
+		}
+
+		if !c.is_alphabetic() {
 			score -= 500;
 		}
 		if c.is_uppercase() {
