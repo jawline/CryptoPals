@@ -112,7 +112,7 @@ pub fn break_repeating_key(cipher: Vec<u8>) -> String {
 	for &(idx, val) in key_scores.iter() {
 		let key = handle_key_size(&cipher, idx);
 		let next = String::from_utf8(repeating_key_xor(&cipher, &key)).unwrap();
-		//println!("Valid: {}\n\n", next);
+		println!("Valid: {}\n\n", next);
 		valid_strings.push(next);
 	}
 
