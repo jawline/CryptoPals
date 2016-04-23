@@ -14,7 +14,7 @@ pub fn one_byte_xor(origin: &Vec<u8>) -> Result<(String, u8), String> {
 
 	let mut highest = None;
 	let mut highest_key = 0;
-	let mut highest_score = -9999999;
+	let mut highest_score = 0.0;
 
 	for xor_v in 0..255 {
 		let xored = xor_all(&origin, xor_v);
@@ -23,7 +23,7 @@ pub fn one_byte_xor(origin: &Vec<u8>) -> Result<(String, u8), String> {
 		if decoded.is_ok() {
 			let unwrapped = decoded.unwrap();
 			let local_score = score_string(&unwrapped);
-			if local_score > highest_score {
+			if highest.is_none() || local_score > highest_score {
 				highest = Some(unwrapped);
 				highest_key = xor_v;
 				highest_score = local_score;
@@ -40,7 +40,7 @@ pub fn one_byte_xor(origin: &Vec<u8>) -> Result<(String, u8), String> {
 
 pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String> {
 	let mut highest = None;
-	let mut highest_score = 0;
+	let mut highest_score = 0 as f64;
 
 	for potential in potentials {
 		let xor_res = one_byte_xor(&potential);
@@ -48,7 +48,7 @@ pub fn find_sbxor(potentials: Vec<Vec<u8>>) -> Result<(String, Vec<u8>), String>
 		if is_ok {
 			let (unwrapped, _) = xor_res.unwrap();
 			let score = score_string(&unwrapped);
-			if score > highest_score {
+			if highest.is_none() || score > highest_score {
 				highest = Some((unwrapped, potential.clone()));
 				highest_score = score;
 			}
@@ -113,7 +113,7 @@ pub fn break_repeating_key(cipher: Vec<u8>) -> String {
 		valid_strings.push(String::from_utf8(repeating_key_xor(&cipher, &key)).unwrap());
 	}
 
-	valid_strings.sort_by(|x, y| score_string(x).cmp(&score_string(x)));
+	valid_strings.sort_by(|x, y| score_string(x).partial_cmp(&score_string(x)).unwrap_or(Ordering::Equal));
 	valid_strings[0].to_string()
 }
 
