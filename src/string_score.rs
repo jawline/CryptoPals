@@ -76,6 +76,10 @@ pub fn score_string(target: &str) -> f64 {
 	score += score_distance('x', *omap.get(&'x').unwrap_or(&0) as f64 / ccount as f64, 0.005);
 	score += score_distance('y', *omap.get(&'y').unwrap_or(&0) as f64 / ccount as f64, 0.02);
 	score += score_distance('z', *omap.get(&'z').unwrap_or(&0) as f64 / ccount as f64, 0.0);
+	score += score_distance('(', *omap.get(&'(').unwrap_or(&0) as f64 / ccount as f64, 0.0);
+	score += score_distance(')', *omap.get(&')').unwrap_or(&0) as f64 / ccount as f64, 0.0);
+	score += score_distance('<', *omap.get(&'>').unwrap_or(&0) as f64 / ccount as f64, 0.0);
+	score += score_distance('#', *omap.get(&'#').unwrap_or(&0) as f64 / ccount as f64, 0.0);
 
 	for word in target.split_whitespace() {
 		if word == "the" || word == "I" || word == "some" || word == "You" || word == "you" || word == "can" {
