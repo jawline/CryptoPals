@@ -97,6 +97,10 @@ fn main() {
             let s2 = std::env::args().nth(3).unwrap();
             println!("Possible: {}", lssl::find_english(&load_strings_base64(&s1), &s2.into_bytes()).trim());
         },
+        Some(ref x) if x == "guess_ecb" => {
+            let s1 = std::env::args().nth(2).unwrap();
+            println!("Possible: {}", lssl::guess_ecb(&load_strings_base64(&s1)));
+        },
     	Some(ref x) if x == "break_repeating_key" => {
     		let in_file = std::env::args().nth(2).unwrap();
     		println!("{}", xor::break_repeating_key(buffer_file(&in_file).from_base64().unwrap()));

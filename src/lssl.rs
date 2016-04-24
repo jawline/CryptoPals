@@ -15,3 +15,7 @@ pub fn find_english(data: &Vec<Vec<u8>>, key: &Vec<u8>) -> String {
 	possibles.sort_by(|x, y| score_string(x).partial_cmp(&score_string(y)).unwrap_or(Ordering::Equal));
 	possibles.pop().unwrap()
 }
+
+pub fn guess_ecb(data: &Vec<Vec<u8>>) -> usize {
+	0
+}
