@@ -16,6 +16,10 @@ pub fn find_english(data: &Vec<Vec<u8>>, key: &Vec<u8>) -> String {
 	possibles.pop().unwrap()
 }
 
+pub fn score_item(data: &Vec<u8>) -> f64 {
+	0.0
+}
+
 pub fn guess_ecb(data: &Vec<Vec<u8>>) -> usize {
 	0
 }

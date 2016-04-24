@@ -5,10 +5,10 @@ mod xor;
 mod hamming;
 mod string_score;
 mod lssl;
+mod padding;
 
 use rustc_serialize::hex::FromHex;
 use rustc_serialize::hex::ToHex;
-
 
 use rustc_serialize::base64::FromBase64;
 use rustc_serialize::base64::ToBase64;
@@ -105,6 +105,10 @@ fn main() {
     		let in_file = std::env::args().nth(2).unwrap();
     		println!("{}", xor::break_repeating_key(buffer_file(&in_file).from_base64().unwrap()));
     	},
+        Some(ref x) if x == "pad_to_20" => {
+            let in_text = std::env::args().nth(2).unwrap();
+            println!("{}", String::from_utf8(padding::pad_block(&in_text.into_bytes(), 20, 'a' as u8)).unwrap());
+        },
 		Some(ref x) => {
 			println!("No selection {}", x);
 		}
