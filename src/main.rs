@@ -1,7 +1,10 @@
 extern crate rustc_serialize;
+extern crate openssl;
+
 mod xor;
 mod hamming;
 mod string_score;
+mod lssl;
 
 use rustc_serialize::hex::FromHex;
 use rustc_serialize::hex::ToHex;
@@ -13,7 +16,7 @@ use std::io::{self, BufReader};
 use std::io::prelude::*;
 use std::fs::File;
 
-fn load_strings(file: &str) -> Vec<Vec<u8>> {
+fn load_strings_hex(file: &str) -> Vec<Vec<u8>> {
 	let mut result = Vec::new();
 
 	let f = File::open(file).unwrap();
@@ -25,6 +28,20 @@ fn load_strings(file: &str) -> Vec<Vec<u8>> {
 
 	result
 }
+
+fn load_strings_base64(file: &str) -> Vec<Vec<u8>> {
+    let mut result = Vec::new();
+
+    let f = File::open(file).unwrap();
+    let f = BufReader::new(f);
+
+    for line in f.lines() {
+        result.push(line.unwrap().from_base64().unwrap());
+    }
+
+    result
+}
+
 
 fn buffer_file(file: &str) -> String {
 	let mut f = File::open(file).unwrap();
@@ -55,7 +72,7 @@ fn main() {
     	Some(ref x) if x == "find_sbxor" => {
     		let arg_one = std::env::args().nth(2).unwrap();
     		println!("Loading potential SBXOR's from file {}", arg_one);
-    		match xor::find_sbxor(load_strings(&arg_one)) {
+    		match xor::find_sbxor(load_strings_hex(&arg_one)) {
     			Ok((likely, bytes)) => {
     				println!("Likely: {}", likely.trim());
     			},
@@ -75,6 +92,11 @@ fn main() {
     		println!("Hamming {} and {}", s1, s2);
     		println!("{}", hamming::distance(&s1.into_bytes(), &s2.into_bytes()).unwrap());
     	},
+        Some(ref x) if x == "openssl_ecb_en" => {
+            let s1 = std::env::args().nth(2).unwrap();
+            let s2 = std::env::args().nth(3).unwrap();
+            println!("Possible: {}", lssl::find_english(&load_strings_base64(&s1), &s2.into_bytes()).trim());
+        },
     	Some(ref x) if x == "break_repeating_key" => {
     		let in_file = std::env::args().nth(2).unwrap();
     		println!("{}", xor::break_repeating_key(buffer_file(&in_file).from_base64().unwrap()));
