@@ -1,6 +1,6 @@
 use openssl::crypto::symm::{encrypt, decrypt};
 use std::string::{String, FromUtf8Error};
-use openssl::crypto::symm::Type::AES_128_ECB;
+use openssl::crypto::symm::Type::{AES_128_ECB, AES_128_CBC};
 use string_score::*;
 use hamming;
 use std::cmp::Ordering;
@@ -22,10 +22,10 @@ pub fn cbc_decrypt(data: &Vec<u8>, block_size: usize, key: &Vec<u8>) -> Vec<u8> 
 
 	for i in 0..(data.len() / block_size) {
 		let block: Vec<u8> = data.iter().skip(i * block_size).take(block_size).map(|&x| x).collect();
-		let mut d_block = encrypt_message(&block, key);
-		let mut xd_block: Vec<u8> = d_block.iter().zip(prev_block.iter()).map(|(x, r)| x ^ r).collect();
-		result.extend(xd_block);
+		let d_block = encrypt_message(&block, key);
+		let x_block: Vec<u8> = d_block.iter().zip(prev_block.iter()).map(|(x, r)| x ^ r).collect();
 		prev_block = block;
+		result.extend(d_block);
 	}
 
 	result
