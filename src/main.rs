@@ -105,6 +105,11 @@ fn main() {
     		let in_file = std::env::args().nth(2).unwrap();
     		println!("{}", xor::break_repeating_key(buffer_file(&in_file).from_base64().unwrap()));
     	},
+        Some(ref x) if x == "cbc_decrypt" => {
+            let in_file = std::env::args().nth(2).unwrap();
+            let key = std::env::args().nth(3).unwrap();
+            println!("{}", String::from_utf8(lssl::cbc_decrypt(&buffer_file(&in_file).from_base64().unwrap(), 16, &key.into_bytes())).unwrap());
+        },
         Some(ref x) if x == "pad_to_20" => {
             let in_text = std::env::args().nth(2).unwrap();
             println!("{}", String::from_utf8(padding::pad_block(&in_text.into_bytes(), 20, 'a' as u8)).unwrap());
