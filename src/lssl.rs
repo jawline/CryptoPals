@@ -16,16 +16,20 @@ pub fn encrypt_message(data: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
 }
 
 pub fn cbc_decrypt(data: &Vec<u8>, block_size: usize, key: &Vec<u8>) -> Vec<u8> {
-	
-	let mut prev_block: Vec<u8> = vec![0; block_size];
+	let d_data = decrypt_message(data, key);
 	let mut result = Vec::new();
 
-	for i in 0..(data.len() / block_size) {
-		let block: Vec<u8> = data.iter().skip(i * block_size).take(block_size).map(|&x| x).collect();
-		let d_block = encrypt_message(&block, key);
-		let x_block: Vec<u8> = d_block.iter().zip(prev_block.iter()).map(|(x, r)| x ^ r).collect();
-		prev_block = block;
-		result.extend(d_block);
+	let mut prev_block = vec![0; block_size];
+
+	for i in 0..data.len() / block_size {
+		let mut block: Vec<u8> = d_data.iter().skip(i * block_size).take(block_size).map(|&x| x).collect();
+
+		for j in 0..block.len() {
+			block[j] ^= prev_block[j];
+		}
+
+		prev_block = data.iter().skip(i * block_size).take(block_size).map(|&x| x).collect();
+		result.extend(block);
 	}
 
 	result
