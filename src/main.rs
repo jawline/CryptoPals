@@ -1,10 +1,12 @@
 extern crate rustc_serialize;
 extern crate openssl;
+extern crate rand;
 
 mod xor;
 mod hamming;
 mod string_score;
 mod lssl;
+mod random;
 mod padding;
 
 use rustc_serialize::hex::FromHex;
@@ -12,6 +14,7 @@ use rustc_serialize::hex::ToHex;
 
 use rustc_serialize::base64::FromBase64;
 use rustc_serialize::base64::ToBase64;
+use rustc_serialize::base64::STANDARD;
 use std::io::{self, BufReader};
 use std::io::prelude::*;
 use std::fs::File;
@@ -113,6 +116,9 @@ fn main() {
         Some(ref x) if x == "pad_to_20" => {
             let in_text = std::env::args().nth(2).unwrap();
             println!("{}", String::from_utf8(padding::pad_block(&in_text.into_bytes(), 20, 'a' as u8)).unwrap());
+        },
+        Some(ref x) if x == "random_aes_key" => {
+            println!("{}", random::generate_key(16).to_base64(STANDARD));
         },
 		Some(ref x) => {
 			println!("No selection {}", x);
