@@ -18,10 +18,11 @@ pub fn encrypt_message(data: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
 pub fn cbc_decrypt(data: &Vec<u8>, block_size: usize, key: &Vec<u8>) -> Vec<u8> {
 	let d_data = decrypt_message(data, key);
 	let mut result = Vec::new();
-
 	let mut prev_block = vec![0; block_size];
 
-	for i in 0..data.len() / block_size {
+	let iterations = (data.len() / block_size) + if data.len() % block_size > 0 { 1 } else { 0 };
+
+	for i in 0..iterations {
 		let mut block: Vec<u8> = d_data.iter().skip(i * block_size).take(block_size).map(|&x| x).collect();
 
 		for j in 0..block.len() {
