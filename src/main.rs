@@ -76,7 +76,7 @@ fn main() {
     		let arg_one = std::env::args().nth(2).unwrap();
     		println!("Loading potential SBXOR's from file {}", arg_one);
     		match xor::find_sbxor(load_strings_hex(&arg_one)) {
-    			Ok((likely, bytes)) => {
+    			Ok((likely, _)) => {
     				println!("Likely: {}", likely.trim());
     			},
     			Err(x) => {
