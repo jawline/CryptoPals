@@ -15,7 +15,7 @@ use rustc_serialize::hex::ToHex;
 use rustc_serialize::base64::FromBase64;
 use rustc_serialize::base64::ToBase64;
 use rustc_serialize::base64::STANDARD;
-use std::io::BufReader;
+use std::io::{Error, BufReader};
 use std::io::prelude::*;
 use std::fs::File;
 
@@ -46,11 +46,11 @@ fn load_strings_base64(file: &str) -> Vec<Vec<u8>> {
 }
 
 
-fn buffer_file(file: &str) -> String {
+fn buffer_file(file: &str) -> Result<String, Error> {
 	let mut f = File::open(file).unwrap();
 	let mut buffer = String::new();
-	f.read_to_string(&mut buffer);
-	buffer
+	try!(f.read_to_string(&mut buffer));
+	Ok(buffer)
 }
 
 fn main() {
@@ -106,12 +106,12 @@ fn main() {
         },
     	Some(ref x) if x == "break_repeating_key" => {
     		let in_file = std::env::args().nth(2).unwrap();
-    		println!("{}", xor::break_repeating_key(buffer_file(&in_file).from_base64().unwrap()));
+    		println!("{}", xor::break_repeating_key(buffer_file(&in_file).unwrap().from_base64().unwrap()));
     	},
         Some(ref x) if x == "cbc_decrypt" => {
             let in_file = std::env::args().nth(2).unwrap();
             let key = std::env::args().nth(3).unwrap();
-            println!("{}", String::from_utf8(lssl::cbc_decrypt(&buffer_file(&in_file).from_base64().unwrap(), 16, &key.into_bytes())).unwrap());
+            println!("{}", String::from_utf8(lssl::cbc_decrypt(&buffer_file(&in_file).unwrap().from_base64().unwrap(), 16, &key.into_bytes())).unwrap());
         },
         Some(ref x) if x == "pad_to_20" => {
             let in_text = std::env::args().nth(2).unwrap();
