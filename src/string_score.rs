@@ -45,7 +45,7 @@ fn sort_frequencies(map: &HashMap<char, usize>) -> Vec<(char, usize)> {
 
 pub fn score_string(target: &str) -> f64 {
 
-	let (mut omap, ccount) = generate_frequency_map(target);
+	let (omap, ccount) = generate_frequency_map(target);
 	let as_vec = sort_frequencies(&omap);
 	
 	let mut score: f64 = 0.0;
@@ -86,20 +86,6 @@ pub fn score_string(target: &str) -> f64 {
 			score += 100.0;
 		}
 	}
-
-	/*for c in target.chars() {
-		if c == ':' || c == '#' || c == '{' || c == '}' {
-			return -10000.0
-		}
-	}
-
-	let search: Vec<&str> = target.split("ss").collect();
-
-	score += search.len() as f64 * 100.0;
-
-	let search: Vec<&str> = target.split("the").collect();
-
-	score += search.len() as f64 * 1000.0;*/
 
 	score as f64
 }
