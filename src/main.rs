@@ -15,7 +15,7 @@ use rustc_serialize::hex::ToHex;
 use rustc_serialize::base64::FromBase64;
 use rustc_serialize::base64::ToBase64;
 use rustc_serialize::base64::STANDARD;
-use std::io::{self, BufReader};
+use std::io::BufReader;
 use std::io::prelude::*;
 use std::fs::File;
 
